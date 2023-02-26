@@ -5,4 +5,6 @@ export type Pokemon = {
 
 export type PokemonDetails = {
   id: number;
+  name: string;
+  imageURL: string;
 };

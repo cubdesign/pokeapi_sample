@@ -10,6 +10,10 @@ export type ApiGetPokemonsResponse = {
 
 export type ApiGetPokemonResponse = {
   id: number;
+  name: string;
+  sprites: {
+    front_default: string;
+  };
 };
 
 export const apiClient = axios.create({
