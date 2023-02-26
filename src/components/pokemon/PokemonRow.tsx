@@ -24,13 +24,15 @@ const PokemonRow: FC<PokemonRowProps> = ({ pokemon }) => {
 
   return (
     <div>
-      <Link href={`/pokemon/${details!.id}}`}>
-        {/* eslint-disable @next/next/no-img-element */}
-        <img src={details!.imageURL} alt={details!.name} />
-        {/* eslint-enable @next/next/no-img-element */}
-        <div>{pokemon.name}</div>
-        <div>{details!.id}</div>
-      </Link>
+      {details && (
+        <Link href={`/pokemon/${details.id}`}>
+          {/* eslint-disable @next/next/no-img-element */}
+          <img src={details.imageURL} alt={details.name} />
+          {/* eslint-enable @next/next/no-img-element */}
+          <div>{pokemon.name}</div>
+          <div>{details.id}</div>
+        </Link>
+      )}
     </div>
   );
 };
