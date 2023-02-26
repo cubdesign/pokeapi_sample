@@ -4,5 +4,5 @@ export type Pokemon = {
 };
 
 export type PokemonDetails = {
-  id: string;
+  id: number;
 };

@@ -1,18 +1,24 @@
 import Head from "next/head";
 import { useQuery } from "react-query";
-import axios from "axios";
 import { useState } from "react";
 import { Pokemon } from "@/types/pokemonTypes";
 import PokemonRow from "@/components/pokemon/PokemonRow";
+import { ApiGetPokemonsResponse, getPokemons } from "@/services/pokeapi";
 
 export default function Home() {
+  const limit = 10;
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
-
-  const query = useQuery(["pokemon"], async () => {
-    const { data } = await axios.get("https://pokeapi.co/api/v2/pokemon");
-    setPokemons(data.results);
-    return data;
+  const { isLoading, error, isSuccess, isError, refetch } = useQuery<
+    ApiGetPokemonsResponse,
+    Error
+  >({
+    queryKey: [`pokemons`],
+    queryFn: () => getPokemons(limit),
+    onSuccess(data) {
+      setPokemons(data.results);
+    },
   });
+
   return (
     <>
       <Head>
