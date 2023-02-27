@@ -1,25 +1,53 @@
 import Head from "next/head";
-import { useQuery } from "react-query";
+import { useInfiniteQuery, useQuery } from "react-query";
 import PokemonRow from "@/components/pokemon/PokemonRow";
-import { ApiGetPokemonsResponse, getPokemons } from "@/services/pokeapi";
+import {
+  ApiGetPokemonsParams,
+  ApiGetPokemonsResponse,
+  getPokemons,
+} from "@/services/pokeapi";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 
 export default function Home() {
   const limit = 12;
 
-  const { data, isLoading, error, isSuccess, isError, refetch } = useQuery<
-    ApiGetPokemonsResponse,
-    Error
-  >({
-    queryKey: [`pokemons`],
-    queryFn: () => getPokemons(limit),
+  const {
+    data,
+    error,
+    isFetching,
+    status,
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+  } = useInfiniteQuery<ApiGetPokemonsResponse, Error>({
+    queryKey: [`pokemons`, { limit: limit, offset: 0 }],
+    queryFn: (options) => {
+      const param = options.pageParam
+        ? options.pageParam
+        : { limit: limit, offset: 0 };
+      return getPokemons(param);
+    },
+    getNextPageParam: (lastPage, pages) => {
+      if (!lastPage.next) {
+        // hasNextPage = false;
+        return undefined;
+      }
+
+      const next = new URL(lastPage.next);
+      const limit = next.searchParams.get("limit");
+      const offset = next.searchParams.get("offset");
+      return { limit: limit, offset: offset };
+    },
   });
+  const pokemons = data?.pages.flatMap((page) => page.results) ?? [];
 
-  const pokemons = data ? data.results : [];
+  if (status === "loading") return <div>Loading...</div>;
 
-  if (isLoading) return <div>Loading...</div>;
-
+  if (status === "error") return <div>Error</div>;
   return (
     <>
       <Head>
@@ -52,6 +80,19 @@ export default function Home() {
               );
             })}
           </Box>
+          <div>
+            <button
+              onClick={() => fetchNextPage()}
+              disabled={!hasNextPage || isFetchingNextPage}
+            >
+              {isFetchingNextPage
+                ? "Loading more..."
+                : hasNextPage
+                ? "Load More"
+                : "Nothing more to load"}
+            </button>
+          </div>
+          <div>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</div>
         </Container>
       </main>
     </>

@@ -1,6 +1,11 @@
 import { Pokemon } from "@/types/pokemonTypes";
 import axios from "axios";
 
+export type ApiGetPokemonsParams = {
+  limit: number;
+  offset: number;
+};
+
 export type ApiGetPokemonsResponse = {
   count: number;
   next: string;
@@ -20,9 +25,9 @@ export const apiClient = axios.create({
   baseURL: "https://pokeapi.co/api/v2",
 });
 
-export const getPokemons = async (limit: number) => {
+export const getPokemons = async ({ limit, offset }: ApiGetPokemonsParams) => {
   const res = await apiClient.get<ApiGetPokemonsResponse>(`/pokemon`, {
-    params: { limit },
+    params: { limit, offset },
   });
 
   return res.data;

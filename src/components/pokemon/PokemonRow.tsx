@@ -24,7 +24,14 @@ const PokemonRow: FC<PokemonRowProps> = ({ pokemon }) => {
       {details && (
         <Link href={`/pokemon/${details.id}`}>
           {/* eslint-disable @next/next/no-img-element */}
-          <img src={details.sprites.front_default} alt={details.name} />
+          <img
+            src={details.sprites.front_default}
+            alt={details.name}
+            style={{
+              width: "96px",
+              height: "96px",
+            }}
+          />
           {/* eslint-enable @next/next/no-img-element */}
           <div>{pokemon.name}</div>
           <div>{details.id}</div>
