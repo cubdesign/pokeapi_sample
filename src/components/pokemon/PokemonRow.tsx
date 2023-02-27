@@ -1,24 +1,27 @@
 import { ApiGetPokemonResponse, getPokemon } from "@/services/pokeapi";
 import { Pokemon, PokemonDetails } from "@/types/pokemonTypes";
 import Link from "next/link";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 export type PokemonRowProps = {
   pokemon: Pokemon;
 };
 const PokemonRow: FC<PokemonRowProps> = ({ pokemon }) => {
   const [details, setDetails] = useState<PokemonDetails | null>(null);
-  const { isLoading } = useQuery<ApiGetPokemonResponse, Error>({
+  const { data, isLoading } = useQuery<ApiGetPokemonResponse, Error>({
     queryKey: [`pokemon`, pokemon.url],
     queryFn: () => getPokemon(pokemon.url),
-    onSuccess(data) {
+  });
+
+  useEffect(() => {
+    if (data) {
       setDetails({
         id: data.id,
         name: data.name,
         imageURL: data.sprites.front_default,
       });
-    },
-  });
+    }
+  }, [data]);
 
   if (isLoading) return <div>Loading...</div>;
 

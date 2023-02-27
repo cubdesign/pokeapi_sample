@@ -2,7 +2,7 @@ import { ApiGetPokemonResponse, getPokemon } from "@/services/pokeapi";
 import { PokemonDetails } from "@/types/pokemonTypes";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
 export default function PokemonPage() {
@@ -12,7 +12,7 @@ export default function PokemonPage() {
 
   const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/${id}`;
 
-  const { isLoading } = useQuery<ApiGetPokemonResponse, Error>({
+  const { data, isLoading } = useQuery<ApiGetPokemonResponse, Error>({
     queryKey: [`pokemon`, pokemonUrl],
     queryFn: () => getPokemon(pokemonUrl),
     onSuccess(data) {
@@ -24,6 +24,16 @@ export default function PokemonPage() {
     },
     enabled: !!id,
   });
+
+  useEffect(() => {
+    if (data) {
+      setDetails({
+        id: data.id,
+        name: data.name,
+        imageURL: data.sprites.front_default,
+      });
+    }
+  }, [data]);
 
   if (isLoading) return <div>Loading...</div>;
 
