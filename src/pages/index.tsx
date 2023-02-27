@@ -8,10 +8,12 @@ import {
 } from "@/services/pokeapi";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
 
 export default function Home() {
   const limit = 12;
-
+  const { ref, inView, entry } = useInView();
   const {
     data,
     error,
@@ -44,6 +46,11 @@ export default function Home() {
     },
   });
   const pokemons = data?.pages.flatMap((page) => page.results) ?? [];
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
 
   if (status === "loading") return <div>Loading...</div>;
 
@@ -82,6 +89,7 @@ export default function Home() {
           </Box>
           <div>
             <button
+              ref={ref}
               onClick={() => fetchNextPage()}
               disabled={!hasNextPage || isFetchingNextPage}
             >
