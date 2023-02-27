@@ -1,5 +1,6 @@
 import { Pokemon } from "@/types/pokemonTypes";
 import axios from "axios";
+import { S } from "vitest/dist/types-7cd96283";
 
 export type ApiGetPokemonsParams = {
   limit: number;
@@ -16,6 +17,8 @@ export type ApiGetPokemonsResponse = {
 export type ApiGetPokemonResponse = {
   id: number;
   name: string;
+  weight: number;
+  height: number;
   sprites: {
     front_default: string;
     other: {
@@ -28,6 +31,13 @@ export type ApiGetPokemonResponse = {
     name: string;
     url: string;
   };
+  types: {
+    slot: number;
+    type: {
+      name: string;
+      url: string;
+    };
+  }[];
 };
 
 export type ApiGetPokemonSpeciesResponse = {
@@ -37,6 +47,34 @@ export type ApiGetPokemonSpeciesResponse = {
       url: string;
     };
     name: string;
+  }[];
+  genera: {
+    genus: string;
+    language: {
+      name: string;
+      url: string;
+    };
+  }[];
+  flavor_text_entries: {
+    flavor_text: string;
+    language: {
+      name: string;
+      url: string;
+    };
+    version: {
+      name: string;
+      url: string;
+    };
+  }[];
+};
+
+export type ApiGetPokemonTypeResponse = {
+  names: {
+    name: string;
+    language: {
+      name: string;
+      url: string;
+    };
   }[];
 };
 
@@ -59,6 +97,12 @@ export const getPokemon = async (url: string) => {
 
 export const getPokemonSpecies = async (url: string) => {
   const res = await apiClient.get<ApiGetPokemonSpeciesResponse>(url);
+  console.log(res.data);
+  return res.data;
+};
+
+export const getPokemonType = async (url: string) => {
+  const res = await apiClient.get<ApiGetPokemonTypeResponse>(url);
   console.log(res.data);
   return res.data;
 };
