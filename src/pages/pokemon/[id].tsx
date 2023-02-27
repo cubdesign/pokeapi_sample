@@ -1,58 +1,58 @@
-import { ApiGetPokemonResponse, getPokemon } from "@/services/pokeapi";
+import {
+  ApiGetPokemonResponse,
+  ApiGetPokemonSpeciesResponse,
+  getPokemon,
+  getPokemonSpecies,
+} from "@/services/pokeapi";
 import { PokemonDetails } from "@/types/pokemonTypes";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
 export default function PokemonPage() {
   const router = useRouter();
   let id = router.query.id ? router.query.id.toString() : null;
-  const [details, setDetails] = useState<PokemonDetails | null>(null);
 
-  const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/${id}`;
+  const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/${id}/`;
 
-  const { data, isLoading } = useQuery<ApiGetPokemonResponse, Error>({
+  const { data: details } = useQuery<ApiGetPokemonResponse, Error>({
     queryKey: [`pokemon`, pokemonUrl],
     queryFn: () => getPokemon(pokemonUrl),
-    onSuccess(data) {
-      setDetails({
-        id: data.id,
-        name: data.name,
-        imageURL: data.sprites.front_default,
-      });
-    },
     enabled: !!id,
   });
 
-  useEffect(() => {
-    if (data) {
-      setDetails({
-        id: data.id,
-        name: data.name,
-        imageURL: data.sprites.other["official-artwork"].front_default,
-      });
-    }
-  }, [data]);
+  const { data: species, isLoading } = useQuery<
+    ApiGetPokemonSpeciesResponse,
+    Error
+  >({
+    queryKey: [`pokemon-species`, details ? details.species.url : ""],
+    queryFn: () => getPokemonSpecies(details ? details.species.url : ""),
+    enabled: !!details,
+  });
+
+  const nameJa = species?.names.find((el) => el.language.name === "ja")?.name;
 
   if (isLoading) return <div>Loading...</div>;
 
   return (
     <>
-      {details && (
+      {details && species && (
         <Head>
           <title>{details.name}</title>
           <meta name="description" content="pokeapi sample." />
         </Head>
       )}
-      {details && (
+      {details && species && (
         <main>
           <h1>
-            {details.id}: {details.name}
+            {details.id}: {details.name} ({nameJa})
           </h1>
 
           {/* eslint-disable @next/next/no-img-element */}
-          <img src={details.imageURL} alt={details.name} />
+          <img
+            src={details.sprites.other["official-artwork"].front_default}
+            alt={details.name}
+          />
           {/* eslint-enable @next/next/no-img-element */}
         </main>
       )}

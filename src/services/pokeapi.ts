@@ -24,6 +24,20 @@ export type ApiGetPokemonResponse = {
       };
     };
   };
+  species: {
+    name: string;
+    url: string;
+  };
+};
+
+export type ApiGetPokemonSpeciesResponse = {
+  names: {
+    language: {
+      name: string;
+      url: string;
+    };
+    name: string;
+  }[];
 };
 
 export const apiClient = axios.create({
@@ -40,5 +54,11 @@ export const getPokemons = async ({ limit, offset }: ApiGetPokemonsParams) => {
 
 export const getPokemon = async (url: string) => {
   const res = await apiClient.get<ApiGetPokemonResponse>(url);
+  return res.data;
+};
+
+export const getPokemonSpecies = async (url: string) => {
+  const res = await apiClient.get<ApiGetPokemonSpeciesResponse>(url);
+  console.log(res.data);
   return res.data;
 };
