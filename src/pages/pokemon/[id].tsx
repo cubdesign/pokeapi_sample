@@ -36,9 +36,17 @@ export default function PokemonPage() {
   const typesUrls = details?.types.map((el) => el.type.url) ?? [];
 
   const nameJa = species?.names.find((el) => el.language.name === "ja")?.name;
+
   const generaJa = species?.genera.find(
     (el) => el.language.name === "ja"
   )?.genus;
+
+  const flavorJaList =
+    species?.flavor_text_entries
+      .filter((el) => el.language.name === "ja")
+      .map((el) => el.flavor_text) ?? [];
+
+  const flavorJa = flavorJaList[flavorJaList.length - 1] ?? "";
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -78,7 +86,7 @@ export default function PokemonPage() {
               <br />
               分類: {generaJa}
               <br />
-              タイプ:{" "}
+              タイプ:
               {typesUrls.map((url, index) => (
                 <PokemonTypeText
                   key={index}
@@ -87,7 +95,7 @@ export default function PokemonPage() {
                 />
               ))}
               <br />
-              説明: xxxx
+              説明: {flavorJa}
             </Box>
             <Box
               sx={{
