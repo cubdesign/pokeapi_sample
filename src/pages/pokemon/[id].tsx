@@ -30,7 +30,7 @@ export default function PokemonPage() {
       setDetails({
         id: data.id,
         name: data.name,
-        imageURL: data.sprites.front_default,
+        imageURL: data.sprites.other["official-artwork"].front_default,
       });
     }
   }, [data]);
