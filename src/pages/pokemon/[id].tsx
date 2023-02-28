@@ -8,6 +8,7 @@ import {
 } from "@/services/pokeapi";
 import { PokemonDetails } from "@/types/pokemonTypes";
 import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
@@ -60,56 +61,61 @@ export default function PokemonPage() {
       )}
       {details && species && (
         <main>
-          <h1>
-            {details.id}: {details.name} ({nameJa})
-          </h1>
-          <Box
+          <Container
             sx={{
-              display: "flex",
-              flexDirection: "row",
+              textAlign: "center",
             }}
           >
-            <Box
-              sx={{
-                width: "50%",
-              }}
-            >
-              No: {details.id}
-              <br />
-              {details.name}
-              <br />
-              {nameJa}
-              <br />
-              高さ: {details.height}
-              <br />
-              重さ: {details.weight}
-              <br />
-              分類: {generaJa}
-              <br />
-              タイプ:
-              {typesUrls.map((url, index) => (
-                <PokemonTypeText
-                  key={index}
-                  url={url}
-                  sx={{ marginRight: "8px", display: "inline-block" }}
+            <h1>
+              {details.id}: {details.name} ({nameJa})
+            </h1>
+            <Box>
+              <Box>
+                {/* eslint-disable @next/next/no-img-element */}
+                <img
+                  src={details.sprites.other["official-artwork"].front_default}
+                  alt={details.name}
+                  style={{ width: `${475 / 2}px` }}
                 />
-              ))}
-              <br />
-              説明: {flavorJa}
+                {/* eslint-enable @next/next/no-img-element */}
+              </Box>
+              <Box
+                sx={{
+                  maxWidth: "320px",
+                  margin: "0 auto",
+                }}
+              >
+                <Box
+                  sx={{
+                    textAlign: "left",
+                  }}
+                >
+                  No: {details.id}
+                  <br />
+                  {details.name}
+                  <br />
+                  {nameJa}
+                  <br />
+                  高さ: {details.height}
+                  <br />
+                  重さ: {details.weight}
+                  <br />
+                  分類: {generaJa}
+                  <br />
+                  タイプ:
+                  {typesUrls.map((url, index) => (
+                    <PokemonTypeText
+                      key={index}
+                      url={url}
+                      sx={{ marginRight: "8px", display: "inline-block" }}
+                    />
+                  ))}
+                  <br />
+                  説明: {flavorJa}
+                </Box>
+              </Box>
             </Box>
-            <Box
-              sx={{
-                width: "50%",
-              }}
-            >
-              {/* eslint-disable @next/next/no-img-element */}
-              <img
-                src={details.sprites.other["official-artwork"].front_default}
-                alt={details.name}
-              />
-              {/* eslint-enable @next/next/no-img-element */}
-            </Box>
-          </Box>
+          </Container>
         </main>
       )}
     </>
